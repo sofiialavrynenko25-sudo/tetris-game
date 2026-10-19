@@ -10,7 +10,7 @@ class Board
     private:
         static const int WIDTH = 10;
         static const int HEIGHT = 20;
-        int _grid[WIDTH][HEIGHT] = { {0} };
+        int _grid[HEIGHT][WIDTH] = { {0} };
 
     public:
         Board() = default;
