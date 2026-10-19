@@ -10,8 +10,8 @@ class Position
         Position(int x, int y)
             : _x(x), _y(y) {}
         
-        int GetX();
-        int GetY();
+        int GetX() const;
+        int GetY() const;
 
         void SetX(int newX);
         void SetY(int newY);

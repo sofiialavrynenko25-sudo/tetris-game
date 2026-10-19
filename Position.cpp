@@ -1,11 +1,11 @@
 #include "Position.h"
 
-int Position::GetX()
+int Position::GetX() const
 {
     return _x;
 }
 
-int Position::GetY()
+int Position::GetY() const
 {
     return _y;
 }
