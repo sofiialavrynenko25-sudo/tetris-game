@@ -28,4 +28,10 @@ class Tetromino
         void RotateLeft();
         void RotateRight();
         void Move(int newX, int newY);
+
+        TetrominoType GetType() const;
+        std::string GetColor() const;
+        Position GetPosition() const;
+        const int* GetShape() const;
+        bool GetIsBomb() const;
 };

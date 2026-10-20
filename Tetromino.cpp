@@ -121,3 +121,28 @@ void Tetromino::Move(int newX, int newY)
     _position.SetX(newX);
     _position.SetY(newY);
 }
+
+TetrominoType Tetromino::GetType() const
+{
+    return _type;
+}
+
+std::string Tetromino::GetColor() const
+{
+    return _color;
+}
+
+Position Tetromino::GetPosition() const
+{
+    return _position;
+}
+
+const int* Tetromino::GetShape() const
+{
+    return &_shape[0][0];
+}
+
+bool Tetromino::GetIsBomb() const
+{
+    return _isBomb;
+}
