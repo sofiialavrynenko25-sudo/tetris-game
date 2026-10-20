@@ -29,7 +29,25 @@ void Board::PlacePiece(Tetromino piece)
 
 std::vector<int> Board::CheckFullRows()
 {
-    return {};
+    std::vector<int> fullRows = {};
+    int sum = 0;
+
+    for (int i = 0; i < 20; i++)
+    {
+        sum = 0;
+
+        for (int j = 0; j < 10; j++)
+        {
+            sum += _grid[i][j];
+        }
+        
+        if (sum == 10)
+        {
+            fullRows.push_back(i);
+        }
+    }
+
+    return fullRows;
 }
 
 void Board::ClearRow(int row)
