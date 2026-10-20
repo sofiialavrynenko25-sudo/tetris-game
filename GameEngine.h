@@ -34,7 +34,8 @@ class GameEngine
         void SpawnPiece();
 
         bool MovePiece(int newX, int newY);
-        bool RotatePiece();
+        bool RotatePieceLeft();
+        bool RotatePieceRight();
 
         void HardDrop();
 

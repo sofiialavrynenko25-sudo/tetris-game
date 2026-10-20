@@ -17,7 +17,7 @@ void GameEngine::FillQueue()
 void GameEngine::SpawnPiece()
 {
     FillQueue();
-    
+
     _activePiece = _nextQueue.front();
     _nextQueue.pop();
 
@@ -34,11 +34,57 @@ void GameEngine::SpawnPiece()
 
 bool GameEngine::MovePiece(int newX, int newY)
 {
+    if (_activePiece.GetType() == TetrominoType::None)
+    {
+        return false;
+    }
+
+    Position target = Position(newX, newY);
+
+    if (IsValidMove(_activePiece, target))
+    {
+        _activePiece.Move(newX, newY);
+        return true;
+    }
+
     return false;
 }
 
-bool GameEngine::RotatePiece()
+bool GameEngine::RotatePieceLeft()
 {
+    if (_activePiece.GetType() == TetrominoType::None)
+    {
+        return false;
+    }
+
+    Tetromino testPiece = _activePiece;
+    testPiece.RotateLeft();
+
+    if (IsValidMove(testPiece, testPiece.GetPosition()))
+    {
+        _activePiece.RotateLeft();
+        return true;
+    }
+
+    return false;
+}
+
+bool GameEngine::RotatePieceRight()
+{
+    if (_activePiece.GetType() == TetrominoType::None)
+    {
+        return false;
+    }
+
+    Tetromino testPiece = _activePiece;
+    testPiece.RotateRight();
+
+    if (IsValidMove(testPiece, testPiece.GetPosition()))
+    {
+        _activePiece.RotateRight();
+        return true;
+    }
+
     return false;
 }
 
