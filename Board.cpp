@@ -68,7 +68,20 @@ void Board::ClearRow(int row)
 
 void Board::TriggerBomb(Position center)
 {
+    int centerX = center.GetX();
+    int centerY = center.GetY();
 
+    for (int i = centerY - 1; i < centerY; i++)
+    {
+        for (int j = centerX - 1; j < centerX; j++)
+        {
+            if (i >= 0 && i < HEIGHT &&
+                j >= 0 && j <WIDTH)
+            {
+                _grid[i][j] = 0;
+            }
+        }
+    }
 }
 
 void Board::ClearAll()
