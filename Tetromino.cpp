@@ -76,12 +76,44 @@ void Tetromino::FillShapeGrid(TetrominoType type)
 
 void Tetromino::RotateLeft()
 {
+    int tempShape[4][4] = { {0} };
 
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            tempShape[3 - j][i] = _shape[i][j];
+        }
+    }
+
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            _shape[i][j] = tempShape[i][j];
+        }
+    }
 }
 
 void Tetromino::RotateRight()
 {
+    int tempShape[4][4] = { {0} };
 
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            tempShape[j][3 - i] = _shape[i][j];
+        }
+    }
+
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            _shape[i][j] = tempShape[i][j];
+        }
+    }
 }
 
 void Tetromino::Move(int newX, int newY)
