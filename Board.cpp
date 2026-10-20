@@ -32,11 +32,11 @@ std::vector<int> Board::CheckFullRows()
     std::vector<int> fullRows = {};
     int sum = 0;
 
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < HEIGHT; i++)
     {
         sum = 0;
 
-        for (int j = 0; j < 10; j++)
+        for (int j = 0; j < WIDTH; j++)
         {
             sum += _grid[i][j];
         }
@@ -52,7 +52,18 @@ std::vector<int> Board::CheckFullRows()
 
 void Board::ClearRow(int row)
 {
+    for (int i = row; i > 0; i--)
+    {
+        for (int j = 0; j < WIDTH; j++)
+        {
+            _grid[i][j] = _grid[i - 1][j];
+        }
+    }
 
+    for (int j = 0; j < WIDTH; j++)
+    {
+        _grid[0][j] = 0;
+    }
 }
 
 void Board::TriggerBomb(Position center)
@@ -62,7 +73,7 @@ void Board::TriggerBomb(Position center)
 
 void Board::ClearAll()
 {
-
+    
 }
 
 int Board::GetWidth() const
