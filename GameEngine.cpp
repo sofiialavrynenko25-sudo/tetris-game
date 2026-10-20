@@ -1,8 +1,35 @@
 #include "GameEngine.h"
 
+void GameEngine::FillQueue()
+{
+    while (_nextQueue.size() < 3)
+    {
+        _nextQueue.push(Tetromino(TetrominoType::I, "Cyan", Position(-1, -1)));
+        _nextQueue.push(Tetromino(TetrominoType::L, "Orange", Position(-1, -1)));
+        _nextQueue.push(Tetromino(TetrominoType::J, "Blue", Position(-1, -1)));
+        _nextQueue.push(Tetromino(TetrominoType::S, "Green", Position(-1, -1)));
+        _nextQueue.push(Tetromino(TetrominoType::Z, "Red", Position(-1, -1)));
+        _nextQueue.push(Tetromino(TetrominoType::O, "Yellow", Position(-1, -1)));
+        _nextQueue.push(Tetromino(TetrominoType::T, "Purple", Position(-1, -1)));
+    }
+}
+
 void GameEngine::SpawnPiece()
 {
+    FillQueue();
+    
+    _activePiece = _nextQueue.front();
+    _nextQueue.pop();
 
+    int spawnX = (_board.GetWidth() / 2) - 2;
+    int spawnY = 0;
+
+    _activePiece.Move(spawnX, spawnY);
+
+    if (!IsValidMove(_activePiece, Position(spawnX, spawnY)))
+    {
+        _state = GameState::GameOver;
+    }
 }
 
 bool GameEngine::MovePiece(int newX, int newY)

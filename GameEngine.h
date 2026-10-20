@@ -23,6 +23,8 @@ class GameEngine
         float _lockDelay = 0.0f;
         StorageManager _storage = StorageManager();
 
+        void FillQueue();
+
     public:
         GameEngine()
         {
