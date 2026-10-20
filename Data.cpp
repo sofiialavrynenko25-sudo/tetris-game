@@ -15,12 +15,12 @@ int Data::GetLinesCleared() const
     return _linesCleared;
 }
 
-TetrominoType Data::ActivePiece() const
+TetrominoType Data::GetActivePiece() const
 {
     return _activePiece;
 }
 
-TetrominoType Data::HeldPiece() const
+TetrominoType Data::GetHeldPiece() const
 {
     return _heldPiece;
 }

@@ -23,6 +23,6 @@ class Data
         const int* GetBoardState() const;
         int GetScore() const;
         int GetLinesCleared() const;
-        TetrominoType ActivePiece() const;
-        TetrominoType HeldPiece() const;
+        TetrominoType GetActivePiece() const;
+        TetrominoType GetHeldPiece() const;
 };
