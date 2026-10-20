@@ -72,10 +72,33 @@ Data StorageManager::Load(std::string filepath)
 
 bool StorageManager::SaveHighScore(int score)
 {
-    return false;
+    std::ofstream file("highscore.txt");
+
+    if (!file.is_open())
+    {
+        return false;
+    }
+
+    file << score;
+
+    file.close();
+
+    return true;
 }
 
 int StorageManager::LoadHighScore()
 {
-    return 0;
+    std::ifstream file("highscore.txt");
+
+    if (!file.is_open())
+    {
+        return 0;
+    }
+
+    int score = 0;
+    file >> score;
+
+    file.close();
+
+    return score;
 }
