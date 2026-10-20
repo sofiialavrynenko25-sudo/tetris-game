@@ -73,7 +73,14 @@ void Board::TriggerBomb(Position center)
 
 void Board::ClearAll()
 {
-    
+    for (int i = 0; i < HEIGHT; i++)
+    {
+        for (int j = 0; j < WIDTH; j++)
+
+        {
+            _grid[i][j] = 0;
+        }
+    }
 }
 
 int Board::GetWidth() const
