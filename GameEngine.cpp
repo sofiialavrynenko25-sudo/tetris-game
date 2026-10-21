@@ -131,12 +131,28 @@ void GameEngine::HoldPiece()
 
 bool GameEngine::CheckGameOver()
 {
-    
+    return _state == GameState::GameOver;
 }
 
 bool GameEngine::ResetGame()
 {
-    return false;
+    _board.ClearAll();
+
+    _activePiece = Tetromino(TetrominoType::None, "", Position(-1, -1));
+    _heldPiece = Tetromino(TetrominoType::None, "", Position(-1, -1));
+    _canHold = true;
+
+    std::queue<Tetromino> emptyQueue = {};
+    _nextQueue = emptyQueue;
+
+    _currScore = 0;
+    _linesCleared = 0;
+
+    _state = GameState::Playing;
+
+    SpawnPiece();
+
+    return true;
 }
 
 bool GameEngine::IsValidMove(Tetromino piece, Position newPosition)
