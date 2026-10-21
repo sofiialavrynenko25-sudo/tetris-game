@@ -167,12 +167,50 @@ void GameEngine::Update(float time)
 
 void GameEngine::SaveGame()
 {
+    const int* board = _board.GetGrid();
 
+    Data toSave = Data(reinterpret_cast<const int(*)[10]>(board), 
+                        _currScore,
+                        _linesCleared,
+                        _activePiece.GetType(),
+                        _heldPiece.GetType());
+                    
+    if (!_storage.Save(toSave, "tetris_game.txt"))
+    {
+        return;
+    }
 }
 
 void GameEngine::LoadGame()
 {
+    Data loaded = _storage.Load("tetris_game.txt");
 
+    _currScore = loaded.GetScore();
+    _linesCleared = loaded.GetLinesCleared();
+
+    TetrominoType active = loaded.GetActivePiece();
+    
+    if (active != TetrominoType::None)
+    {
+        _activePiece = Tetromino(active, "Cyan", Position(-1, -1));
+    }
+    else
+    {
+        _activePiece = Tetromino(TetrominoType::None, "", Position(-1, -1));
+    }
+
+    TetrominoType held = loaded.GetHeldPiece();
+    
+    if (held != TetrominoType::None)
+    {
+        _heldPiece = Tetromino(held, "Cyan", Position(-1, -1));
+    }
+    else
+    {
+        _heldPiece = Tetromino(TetrominoType::None, "", Position(-1, -1));
+    }
+
+    _state = GameState::Playing;
 }
 
 Board GameEngine::GetBoard()
