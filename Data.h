@@ -14,6 +14,7 @@ class Data
         TetrominoType _heldPiece = TetrominoType::None;
 
     public:
+        Data() = default;
         Data(const int boardState[20][10], int score, int linesCleared, TetrominoType activePiece, TetrominoType heldPiece)
             : _score(score), _linesCleared(linesCleared), _activePiece(activePiece), _heldPiece(heldPiece)
             {
