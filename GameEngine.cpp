@@ -114,6 +114,14 @@ void GameEngine::HardDrop()
         }
     }
 
+    _currScore += VICTORY_POINTS * fullRows.size();
+    _linesCleared += fullRows.size();
+
+    if (_currScore > _highScore)
+    {
+        _highScore = _currScore;
+    }
+
     SpawnPiece();
 }
 
@@ -240,6 +248,14 @@ void GameEngine::Update(float time)
                 {
                     _board.ClearRow(fullRows[i]);
                 }
+            }
+
+            _currScore += VICTORY_POINTS * fullRows.size();
+            _linesCleared += fullRows.size();
+
+            if (_currScore > _highScore)
+            {
+                _highScore = _currScore;
             }
 
             SpawnPiece();

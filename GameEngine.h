@@ -24,6 +24,8 @@ class GameEngine
         float _dropTimer = 0.0f;
         StorageManager _storage = StorageManager();
 
+        static const int VICTORY_POINTS = 40;
+
         void FillQueue();
 
     public:
