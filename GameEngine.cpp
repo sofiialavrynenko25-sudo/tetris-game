@@ -30,6 +30,8 @@ void GameEngine::SpawnPiece()
     {
         _state = GameState::GameOver;
     }
+
+    _canHold = true;
 }
 
 bool GameEngine::MovePiece(int newX, int newY)
@@ -95,12 +97,41 @@ void GameEngine::HardDrop()
 
 void GameEngine::HoldPiece()
 {
+    if (!_canHold || _activePiece.GetType() == TetrominoType::None)
+    {
+        return;
+    }
 
+    Tetromino temp = Tetromino(_activePiece.GetType(), _activePiece.GetColor(), Position(-1, -1));
+
+    if (_heldPiece.GetType() == TetrominoType::None)
+    {
+        _heldPiece = temp;
+        SpawnPiece();
+    }
+    else
+    {
+        Tetromino tempCurr = _heldPiece;
+        _heldPiece = temp;
+
+        _activePiece = tempCurr;
+
+        int spawnX = (_board.GetWidth() / 2) - 2;
+        int spawnY = 0;
+        _activePiece.Move(spawnX, spawnY);
+
+        if (!IsValidMove(_activePiece, Position(spawnX, spawnY)))
+        {
+            _state = GameState::GameOver;
+        }
+    }
+
+    _canHold = false;
 }
 
 bool GameEngine::CheckGameOver()
 {
-    return false;
+    
 }
 
 bool GameEngine::ResetGame()
