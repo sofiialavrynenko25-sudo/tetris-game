@@ -22,4 +22,5 @@ class Board
 
         int GetWidth() const;
         int GetHeight() const;
+        const int* GetGrid() const;
 };

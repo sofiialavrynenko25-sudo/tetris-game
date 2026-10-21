@@ -105,3 +105,8 @@ int Board::GetHeight() const
 {
     return HEIGHT;
 }
+
+const int* Board::GetGrid() const
+{
+    return &_grid[0][0];
+}
