@@ -21,6 +21,7 @@ class GameEngine
         int _linesCleared = 0;
         GameState _state = GameState::Menu;
         float _lockDelay = 0.0f;
+        float _dropTimer = 0.0f;
         StorageManager _storage = StorageManager();
 
         void FillQueue();
