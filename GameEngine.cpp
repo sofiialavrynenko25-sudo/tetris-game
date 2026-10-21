@@ -127,6 +127,7 @@ void GameEngine::HardDrop()
     if (_currScore > _highScore)
     {
         _highScore = _currScore;
+        _storage.SaveHighScore(_highScore);
     }
 
     SpawnPiece();
@@ -270,6 +271,7 @@ void GameEngine::Update(float time)
             if (_currScore > _highScore)
             {
                 _highScore = _currScore;
+                _storage.SaveHighScore(_highScore);
             }
 
             SpawnPiece();
@@ -290,6 +292,12 @@ void GameEngine::SaveGame()
     if (!_storage.Save(toSave, "tetris_game.txt"))
     {
         return;
+    }
+
+    if (_currScore > _highScore)
+    {
+        _highScore = _currScore;
+        _storage.SaveHighScore(_highScore);    
     }
 }
 
