@@ -179,12 +179,72 @@ bool GameEngine::ResetGame()
 
 bool GameEngine::IsValidMove(Tetromino piece, Position newPosition)
 {
-    return false;
+    const int* shape = piece.GetShape();
+    const int* grid = _board.GetGrid();
+    
+    int x = newPosition.GetX();
+    int y = newPosition.GetY();
+
+    for (int i = 0; i < 4; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            if (shape[i * 4 + j] == 1)
+            {
+                int boardX = x + j;
+                int boardY = y + i;
+
+                if (boardX< 0 || boardY < 0 || 
+                    boardX >= _board.GetWidth() || boardY >= _board.GetHeight())
+                {
+                    return false;
+                }
+
+                if (grid[boardY * 10 + boardX] == 1)
+                {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
 }
 
 void GameEngine::Update(float time)
 {
+    if (_state != GameState::Playing)
+    {
+        return;
+    }
 
+    _dropTimer += time;
+
+    if (_dropTimer >= 0.5f)
+    {
+        _dropTimer = 0.0f;
+
+        if (IsValidMove(_activePiece, Position(_activePiece.GetPosition().GetX(), _activePiece.GetPosition().GetY() + 1)))
+        {
+            _activePiece.Move(_activePiece.GetPosition().GetX(), _activePiece.GetPosition().GetY() + 1);
+        }
+        else
+        {
+            _board.PlacePiece(_activePiece);
+
+            std::vector<int> fullRows = _board.CheckFullRows();
+
+            if (!fullRows.empty())
+            {
+                for (int i = 0; i < fullRows.size(); i++)
+                {
+                    _board.ClearRow(fullRows[i]);
+                }
+            }
+
+            SpawnPiece();
+        }
+    }
 }
 
 void GameEngine::SaveGame()
