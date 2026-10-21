@@ -92,7 +92,29 @@ bool GameEngine::RotatePieceRight()
 
 void GameEngine::HardDrop()
 {
+    if (_activePiece.GetType() == TetrominoType::None)
+    {
+        return;
+    }
 
+    while (IsValidMove(_activePiece, Position(_activePiece.GetPosition().GetX(), _activePiece.GetPosition().GetY() + 1)))
+    {
+        _activePiece.Move(_activePiece.GetPosition().GetX(), _activePiece.GetPosition().GetY() + 1);
+    }
+
+    _board.PlacePiece(_activePiece);
+
+    std::vector<int> fullRows = _board.CheckFullRows();
+
+    if (!fullRows.empty())
+    {
+        for (int i = 0; i < fullRows.size(); i++)
+        {
+            _board.ClearRow(fullRows[i]);
+        }
+    }
+
+    SpawnPiece();
 }
 
 void GameEngine::HoldPiece()
