@@ -102,7 +102,14 @@ void GameEngine::HardDrop()
         _activePiece.Move(_activePiece.GetPosition().GetX(), _activePiece.GetPosition().GetY() + 1);
     }
 
-    _board.PlacePiece(_activePiece);
+    if (_activePiece.GetIsBomb())
+    {
+        _board.TriggerBomb(_activePiece.GetPosition());
+    }
+    else
+    {
+        _board.PlacePiece(_activePiece);
+    }
 
     std::vector<int> fullRows = _board.CheckFullRows();
 
@@ -238,7 +245,14 @@ void GameEngine::Update(float time)
         }
         else
         {
-            _board.PlacePiece(_activePiece);
+            if (_activePiece.GetIsBomb())
+            {
+                _board.TriggerBomb(_activePiece.GetPosition());
+            }
+            else
+            {
+                _board.PlacePiece(_activePiece);
+            }
 
             std::vector<int> fullRows = _board.CheckFullRows();
 
