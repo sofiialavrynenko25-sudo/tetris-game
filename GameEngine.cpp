@@ -46,6 +46,7 @@ bool GameEngine::MovePiece(int newX, int newY)
     if (IsValidMove(_activePiece, target))
     {
         _activePiece.Move(newX, newY);
+        _lockDelay = 0.0f;
         return true;
     }
 
@@ -65,6 +66,7 @@ bool GameEngine::RotatePieceLeft()
     if (IsValidMove(testPiece, testPiece.GetPosition()))
     {
         _activePiece.RotateLeft();
+        _lockDelay = 0.0f;
         return true;
     }
 
@@ -84,6 +86,7 @@ bool GameEngine::RotatePieceRight()
     if (IsValidMove(testPiece, testPiece.GetPosition()))
     {
         _activePiece.RotateRight();
+        _lockDelay = 0.0f;
         return true;
     }
 
@@ -236,15 +239,21 @@ void GameEngine::Update(float time)
 
     _dropTimer += time;
 
-    if (_dropTimer >= 0.5f)
+    if (IsValidMove(_activePiece, Position(_activePiece.GetPosition().GetX(), _activePiece.GetPosition().GetY() + 1)))
     {
-        _dropTimer = 0.0f;
-
-        if (IsValidMove(_activePiece, Position(_activePiece.GetPosition().GetX(), _activePiece.GetPosition().GetY() + 1)))
+        if (_dropTimer >= 0.5f)
         {
             _activePiece.Move(_activePiece.GetPosition().GetX(), _activePiece.GetPosition().GetY() + 1);
+            _dropTimer = 0.0f;
         }
-        else
+
+        _lockDelay = 0.0f;
+    }
+    else
+    {
+        _lockDelay += time;
+
+        if (_lockDelay >= 0.5f)
         {
             if (_activePiece.GetIsBomb())
             {
@@ -255,6 +264,8 @@ void GameEngine::Update(float time)
                 _board.PlacePiece(_activePiece);
             }
 
+            _lockDelay = 0.0f;
+
             std::vector<int> fullRows = _board.CheckFullRows();
 
             if (!fullRows.empty())
@@ -262,7 +273,7 @@ void GameEngine::Update(float time)
                 for (int i = 0; i < fullRows.size(); i++)
                 {
                     _board.ClearRow(fullRows[i]);
-                }
+                }       
             }
 
             _currScore += VICTORY_POINTS * fullRows.size();
