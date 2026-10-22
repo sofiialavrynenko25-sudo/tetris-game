@@ -11,5 +11,5 @@ class UserInputManager
         UserInputManager(GameEngine& gameEngine)
             : _gameEngine(gameEngine) {}
 
-        void ProcessInput();
+        void ProcessInput(const sf::Event& event);
 };
