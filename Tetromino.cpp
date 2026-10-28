@@ -37,8 +37,8 @@ void Tetromino::FillShapeGrid(TetrominoType type)
         {
             _shape[1][1] = 1;
             _shape[2][1] = 1;
-            _shape[0][3] = 1;
-            _shape[1][3] = 1;
+            _shape[0][2] = 1;
+            _shape[1][2] = 1;
             break;
         }
 
