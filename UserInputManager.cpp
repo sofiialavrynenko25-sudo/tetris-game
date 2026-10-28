@@ -6,6 +6,11 @@ void UserInputManager::ProcessInput(const sf::Event& event)
 {
     if (const auto* keyPressed = event.getIf<sf::Event::KeyPressed>())
     {
+        if (_gameEngine.CheckGameOver())
+        {
+            return;
+        }
+        
         Position currPosition = _gameEngine.GetActivePiece().GetPosition();
 
         int currX = currPosition.GetX();
