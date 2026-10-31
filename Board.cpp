@@ -66,15 +66,38 @@ void Board::ClearRow(int row)
     }
 }
 
-void Board::TriggerBomb(Position center)
+void Board::TriggerBomb(Tetromino piece)
 {
-    int centerY = center.GetY();
+    const int* shape = piece.GetShape();
 
-    for (int i = centerY - 1; i < centerY; i++)
+    int x = piece.GetPosition().GetX();
+    int y = piece.GetPosition().GetY();
+
+    int sumX = 0;
+    int sumY = 0;
+    int c = 0;
+
+    for (int i = 0; i < 4; i++)
     {
-        if (i >= 0 && i < HEIGHT)
+        for (int j = 0; j < 4; j++)
         {
-            for (int j = 0; j < WIDTH; j++)
+            if (shape[i * 4 + j] == 1)
+            {
+                sumX += j;
+                sumY += i;
+                c++;
+            }
+        }
+    }
+
+    int centerX = x + sumX / c;
+    int centerY = y + sumY / c;
+
+    for (int i = centerY - BOMB_RAD; i <= centerY + BOMB_RAD; i ++)
+    {
+        for (int j = centerX - BOMB_RAD; j <= centerX + BOMB_RAD; j++)
+        {
+            if (i >= 0 && i < HEIGHT && j >= 0 && j < WIDTH)
             {
                 _grid[i][j] = 0;
             }

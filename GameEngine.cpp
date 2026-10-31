@@ -107,7 +107,7 @@ void GameEngine::HardDrop()
 
     if (_activePiece.GetIsBomb())
     {
-        _board.TriggerBomb(_activePiece.GetPosition());
+        _board.TriggerBomb(_activePiece);
     }
     else
     {
@@ -143,7 +143,7 @@ void GameEngine::HoldPiece()
         return;
     }
 
-    Tetromino temp = Tetromino(_activePiece.GetType(), _activePiece.GetColor(), Position(-1, -1));
+    Tetromino temp = Tetromino(_activePiece.GetType(), _activePiece.GetColor(), Position(-1, -1), _activePiece.GetIsBomb());
 
     if (_heldPiece.GetType() == TetrominoType::None)
     {
@@ -257,7 +257,7 @@ void GameEngine::Update(float time)
         {
             if (_activePiece.GetIsBomb())
             {
-                _board.TriggerBomb(_activePiece.GetPosition());
+                _board.TriggerBomb(_activePiece);
             }
             else
             {

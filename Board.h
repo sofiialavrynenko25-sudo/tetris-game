@@ -17,10 +17,12 @@ class Board
         void PlacePiece(Tetromino piece);
         std::vector<int> CheckFullRows();
         void ClearRow(int row);
-        void TriggerBomb(Position center);
+        void TriggerBomb(Tetromino piece);
         void ClearAll();
 
         int GetWidth() const;
         int GetHeight() const;
         const int* GetGrid() const;
+
+        static const int BOMB_RAD = 2;
 };

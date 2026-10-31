@@ -25,6 +25,12 @@ class Tetromino
                 _isBomb = (rand() % 100 < 10);
             }
 
+        Tetromino(TetrominoType type, std::string color, Position position, bool isBomb)
+            : _type(type), _color(color), _position(position), _isBomb(isBomb) 
+            {
+                FillShapeGrid(type);
+            }
+
         void RotateLeft();
         void RotateRight();
         void Move(int newX, int newY);
