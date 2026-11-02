@@ -62,6 +62,12 @@ Data StorageManager::Load(std::string filepath)
 
     file >> score >> linesCleared >> activePiece >> heldPiece;
 
+    if (file.fail() || activePiece < 0 || activePiece > 7 || heldPiece < 0 || heldPiece > 7 || score < 0 || linesCleared < 0)
+    {
+        int emptyBoard[20][10] = { {0} };
+        return Data(emptyBoard, 0, 0, TetrominoType::None, TetrominoType::None);
+    }
+
     TetrominoType activePieceType = static_cast<TetrominoType>(activePiece);
     TetrominoType heldPieceType = static_cast<TetrominoType>(heldPiece);
 
