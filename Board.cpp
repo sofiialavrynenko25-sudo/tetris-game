@@ -105,6 +105,24 @@ void Board::TriggerBomb(Tetromino piece)
     }
 }
 
+void Board::SetGrid(const int* grid)
+{
+    for (int i = 0; i < HEIGHT; i++)
+    {
+        for (int j = 0; j < WIDTH; j++)
+        {
+            if (grid[i * WIDTH + j] != 0)
+            {
+                _grid[i][j] = 1;
+            }
+            else 
+            {
+                _grid[i][j] = 0;
+            }
+        }
+    }
+}
+
 void Board::ClearAll()
 {
     for (int i = 0; i < HEIGHT; i++)

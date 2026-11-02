@@ -18,6 +18,7 @@ class Board
         std::vector<int> CheckFullRows();
         void ClearRow(int row);
         void TriggerBomb(Tetromino piece);
+        void SetGrid(const int* grid);
         void ClearAll();
 
         int GetWidth() const;

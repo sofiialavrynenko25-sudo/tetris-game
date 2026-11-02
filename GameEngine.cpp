@@ -189,6 +189,9 @@ bool GameEngine::ResetGame()
     _currScore = 0;
     _linesCleared = 0;
 
+    _lockDelay = 0.0f;
+    _dropTimer = 0.0f;
+
     _state = GameState::Playing;
 
     SpawnPiece();
@@ -290,8 +293,33 @@ void GameEngine::Update(float time)
     }
 }
 
-void GameEngine::SaveGame()
+void GameEngine::PauseGame()
 {
+    if (_state == GameState::Playing)
+    {
+        _state = GameState::Paused;
+    }
+}
+
+void GameEngine::ResumeGame()
+{
+    if (_state == GameState::Paused)
+    {
+        _state = GameState::Playing;
+    }
+}
+
+void GameEngine::GoToMenu()
+{
+    _state = GameState::Menu;
+}
+
+bool GameEngine::SaveGame()
+{
+    if (_state != GameState::Playing && _state != GameState::Paused)
+    {
+        return false;
+    }
     const int* board = _board.GetGrid();
 
     Data toSave = Data(reinterpret_cast<const int(*)[10]>(board), 
@@ -302,46 +330,61 @@ void GameEngine::SaveGame()
                     
     if (!_storage.Save(toSave, "tetris_game.txt"))
     {
-        return;
+        return false;
     }
 
-    if (_currScore > _highScore)
-    {
-        _highScore = _currScore;
-        _storage.SaveHighScore(_highScore);    
-    }
+    return true;
 }
 
-void GameEngine::LoadGame()
+bool GameEngine::LoadGame()
 {
     Data loaded = _storage.Load("tetris_game.txt");
 
+    TetrominoType active = loaded.GetActivePiece();
+    
+    if (active == TetrominoType::None)
+    {
+        return false;
+    }
+
+    _board.SetGrid(loaded.GetBoardState());
     _currScore = loaded.GetScore();
     _linesCleared = loaded.GetLinesCleared();
 
-    TetrominoType active = loaded.GetActivePiece();
-    
-    if (active != TetrominoType::None)
-    {
-        _activePiece = Tetromino(active, "Cyan", Position(-1, -1));
-    }
-    else
-    {
-        _activePiece = Tetromino(TetrominoType::None, "", Position(-1, -1));
-    }
+    _nextQueue = std::queue<Tetromino>();
+    FillQueue();
 
     TetrominoType held = loaded.GetHeldPiece();
-    
+
     if (held != TetrominoType::None)
     {
-        _heldPiece = Tetromino(held, "Cyan", Position(-1, -1));
+        _heldPiece = Tetromino(held, "", Position(-1, -1), false);
     }
     else
     {
-        _heldPiece = Tetromino(TetrominoType::None, "", Position(-1, -1));
+        _heldPiece = Tetromino(TetrominoType::None, "", Position(-1, -1), false);
     }
 
-    _state = GameState::Playing;
+    _activePiece = Tetromino(active, "", Position(-1, -1), false);
+
+    int spawnX = (_board.GetWidth() / 2) - 2;
+    _activePiece.Move(spawnX, 0);
+
+    _canHold = true;
+
+    _lockDelay = 0.0f;
+    _dropTimer = 0.0f;
+
+    if (!IsValidMove(_activePiece, _activePiece.GetPosition()))
+    {
+        _state = GameState::GameOver;
+    }
+    else
+    {
+        _state = GameState::Paused;
+    }
+
+    return true;
 }
 
 Board GameEngine::GetBoard()
@@ -372,4 +415,9 @@ int GameEngine::GetCurrScore()
 int GameEngine::GetHighScore()
 {
     return _highScore;
+}
+
+GameState GameEngine::GetState()
+{
+    return _state;
 }

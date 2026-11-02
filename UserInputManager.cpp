@@ -1,44 +1,93 @@
-#include <SFML/Graphics.hpp>
-
 #include "UserInputManager.h"
 
 void UserInputManager::ProcessInput(const sf::Event& event)
 {
-    if (const auto* keyPressed = event.getIf<sf::Event::KeyPressed>())
+    const auto* keyPressed = event.getIf<sf::Event::KeyPressed>();
+
+    if (keyPressed == nullptr)
     {
-        if (_gameEngine.CheckGameOver())
-        {
-            return;
-        }
-        
-        Position currPosition = _gameEngine.GetActivePiece().GetPosition();
+        return;
+    }
 
-        int currX = currPosition.GetX();
-        int currY = currPosition.GetY();
+    sf::Keyboard::Key key = keyPressed -> code;
+    GameState state = _gameEngine.GetState();
 
-        if (keyPressed -> code == sf::Keyboard::Key::A)
+    if (state == GameState::Menu)
+    {
+        if (key == sf::Keyboard::Key::Enter)
         {
-            _gameEngine.MovePiece(currX - 1, currY);
+            _gameEngine.ResetGame();
         }
-        else if (keyPressed -> code == sf::Keyboard::Key::D)
+        else if (key == sf::Keyboard::Key::L)
         {
-            _gameEngine.MovePiece(currX + 1, currY);
+            _gameEngine.LoadGame();
         }
-        else if (keyPressed -> code == sf::Keyboard::Key::Space)
+    }
+    else if (state == GameState::Playing)
+    {
+        Tetromino active = _gameEngine.GetActivePiece();
+        Position activePosition = active.GetPosition();
+
+        int x = activePosition.GetX();
+        int y = activePosition.GetY();
+
+        if (key == sf::Keyboard::Key::A)
+        {
+            _gameEngine.MovePiece(x - 1, y);
+        }
+        else if (key == sf::Keyboard::Key::D)
+        {
+            _gameEngine.MovePiece(x + 1, y);
+        }
+        else if (key == sf::Keyboard::Key::Space)
         {
             _gameEngine.HardDrop();
         }
-        else if (keyPressed -> code == sf::Keyboard::Key::H)
+        else if (key == sf::Keyboard::Key::H)
         {
             _gameEngine.HoldPiece();
         }
-        else if (keyPressed -> code == sf::Keyboard::Key::Left)
+        else if (key == sf::Keyboard::Key::Left)
         {
             _gameEngine.RotatePieceLeft();
         }
-        else if (keyPressed -> code == sf::Keyboard::Key::Right)
+        else if (key == sf::Keyboard::Key::Right)
         {
-            _gameEngine.RotatePieceRight();
+            _gameEngine.RotatePieceRight(); 
+        }
+        else if (key == sf::Keyboard::Key::P)
+        {
+            _gameEngine.PauseGame();
+        }
+    }
+    else if (state == GameState::Paused)
+    {
+        if (key == sf::Keyboard::Key::P)
+        {
+            _gameEngine.ResumeGame();
+        }
+        else if (key == sf::Keyboard::Key::S)
+        {
+            _gameEngine.SaveGame();
+        }
+        else if (key == sf::Keyboard::Key::L)
+        {
+            _gameEngine.LoadGame();
+        }
+        else if (key == sf::Keyboard::Key::M)
+        {
+            _gameEngine.GoToMenu();
+        }
+    }
+    else if (state == GameState::GameOver)
+    {
+        if (key == sf::Keyboard::Key::R)
+        {
+            _gameEngine.ResetGame();
+        }
+        else if (key == sf::Keyboard::Key::M)
+        {
+            _gameEngine.GoToMenu();
         }
     }
 }

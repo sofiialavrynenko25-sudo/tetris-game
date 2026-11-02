@@ -51,8 +51,12 @@ class GameEngine
 
         void Update(float time);
 
-        void SaveGame();
-        void LoadGame();
+        void PauseGame();
+        void ResumeGame();
+        void GoToMenu();
+
+        bool SaveGame();
+        bool LoadGame();
 
         Board GetBoard();
         Tetromino GetActivePiece();
@@ -60,4 +64,5 @@ class GameEngine
         std::queue<Tetromino> GetNextQueue();
         int GetCurrScore();
         int GetHighScore();
+        GameState GetState();
 };
