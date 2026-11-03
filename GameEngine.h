@@ -1,7 +1,9 @@
 #pragma once
 
-#include <string>
 #include <queue>
+#include <random>
+#include <algorithm>
+#include <vector>
 
 #include "Tetromino.h"
 #include "Board.h"
@@ -11,6 +13,8 @@
 class GameEngine
 {
     private:
+        std::mt19937 _rng{ std::random_device{}() };
+        
         Board _board = Board();
         Tetromino _activePiece = Tetromino(TetrominoType::None, "", Position(-1, -1));
         Tetromino _heldPiece = Tetromino(TetrominoType::None, "", Position(-1, -1));

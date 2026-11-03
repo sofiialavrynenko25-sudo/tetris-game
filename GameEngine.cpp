@@ -4,13 +4,22 @@ void GameEngine::FillQueue()
 {
     while (_nextQueue.size() < 3)
     {
-        _nextQueue.push(Tetromino(TetrominoType::I, "Cyan", Position(-1, -1)));
-        _nextQueue.push(Tetromino(TetrominoType::L, "Orange", Position(-1, -1)));
-        _nextQueue.push(Tetromino(TetrominoType::J, "Blue", Position(-1, -1)));
-        _nextQueue.push(Tetromino(TetrominoType::S, "Green", Position(-1, -1)));
-        _nextQueue.push(Tetromino(TetrominoType::Z, "Red", Position(-1, -1)));
-        _nextQueue.push(Tetromino(TetrominoType::O, "Yellow", Position(-1, -1)));
-        _nextQueue.push(Tetromino(TetrominoType::T, "Purple", Position(-1, -1)));
+        std::vector<Tetromino> bag = {
+        Tetromino(TetrominoType::I, "Cyan", Position(-1, -1)),
+        Tetromino(TetrominoType::L, "Orange", Position(-1, -1)),
+        Tetromino(TetrominoType::J, "Blue", Position(-1, -1)),
+        Tetromino(TetrominoType::S, "Green", Position(-1, -1)),
+        Tetromino(TetrominoType::Z, "Red", Position(-1, -1)),
+        Tetromino(TetrominoType::O, "Yellow", Position(-1, -1)),
+        Tetromino(TetrominoType::T, "Purple", Position(-1, -1))
+        };
+
+        std::shuffle(bag.begin(), bag.end(), _rng);
+
+        for (const Tetromino& piece : bag)
+        {
+            _nextQueue.push(piece);
+        }
     }
 }
 

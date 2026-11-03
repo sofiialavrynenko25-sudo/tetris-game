@@ -12,7 +12,7 @@ int main()
     sf::Clock clock;
 
     GameEngine gameEngine;
-    UserInputManager inputManager(gameEngine);
+    UserInputManager inputManager;
     RenderingEngine renderingEngine(window, gameEngine);
 
     while (window.isOpen())
@@ -26,7 +26,10 @@ int main()
                 window.close();
             }
 
-            inputManager.ProcessInput(*event);
+            if (ICommand* command = inputManager.ProcessInput(*event, gameEngine.GetState()))
+            {
+                command -> Execute(gameEngine);
+            }
         }
 
         gameEngine.Update(deltaTimer);

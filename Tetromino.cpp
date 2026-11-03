@@ -17,36 +17,36 @@ void Tetromino::FillShapeGrid(TetrominoType type)
 
         case TetrominoType::L:
         {
-            _shape[1][0] = 1;
-            _shape[1][1] = 1;
             _shape[1][2] = 1;
+            _shape[2][0] = 1;
+            _shape[2][1] = 1;
             _shape[2][2] = 1;
             break;
         }
 
         case TetrominoType::J:
         {
+            _shape[1][0] = 1;
             _shape[2][0] = 1;
             _shape[2][1] = 1;
             _shape[2][2] = 1;
-            _shape[1][2] = 1;
             break;
         }
 
         case TetrominoType::S:
         {
             _shape[1][1] = 1;
-            _shape[2][1] = 1;
-            _shape[0][2] = 1;
             _shape[1][2] = 1;
+            _shape[2][0] = 1;
+            _shape[2][1] = 1;
             break;
         }
 
         case TetrominoType::Z:
         {
-            _shape[0][1] = 1;
+            _shape[1][0] = 1;
             _shape[1][1] = 1;
-            _shape[1][2] = 1;
+            _shape[2][1] = 1;
             _shape[2][2] = 1;
             break;
         }
@@ -62,10 +62,10 @@ void Tetromino::FillShapeGrid(TetrominoType type)
 
         case TetrominoType::T:
         {
-            _shape[0][1] = 1;
             _shape[1][1] = 1;
+            _shape[2][0] = 1;
             _shape[2][1] = 1;
-            _shape[1][2] = 1;
+            _shape[2][2] = 1;
             break;
         }
 

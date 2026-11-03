@@ -1,93 +1,27 @@
 #include "UserInputManager.h"
 
-void UserInputManager::ProcessInput(const sf::Event& event)
+ICommand* UserInputManager::ProcessInput(const sf::Event& event, GameState state)
 {
     const auto* keyPressed = event.getIf<sf::Event::KeyPressed>();
 
     if (keyPressed == nullptr)
     {
-        return;
+        return nullptr;
     }
 
-    sf::Keyboard::Key key = keyPressed -> code;
-    GameState state = _gameEngine.GetState();
+    auto gameState = _connections.find(state);
 
-    if (state == GameState::Menu)
+    if (gameState == _connections.end())
     {
-        if (key == sf::Keyboard::Key::Enter)
-        {
-            _gameEngine.ResetGame();
-        }
-        else if (key == sf::Keyboard::Key::L)
-        {
-            _gameEngine.LoadGame();
-        }
+        return nullptr;
     }
-    else if (state == GameState::Playing)
-    {
-        Tetromino active = _gameEngine.GetActivePiece();
-        Position activePosition = active.GetPosition();
 
-        int x = activePosition.GetX();
-        int y = activePosition.GetY();
+    auto command = gameState -> second.find(keyPressed -> code);
 
-        if (key == sf::Keyboard::Key::A)
-        {
-            _gameEngine.MovePiece(x - 1, y);
-        }
-        else if (key == sf::Keyboard::Key::D)
-        {
-            _gameEngine.MovePiece(x + 1, y);
-        }
-        else if (key == sf::Keyboard::Key::Space)
-        {
-            _gameEngine.HardDrop();
-        }
-        else if (key == sf::Keyboard::Key::H)
-        {
-            _gameEngine.HoldPiece();
-        }
-        else if (key == sf::Keyboard::Key::Left)
-        {
-            _gameEngine.RotatePieceLeft();
-        }
-        else if (key == sf::Keyboard::Key::Right)
-        {
-            _gameEngine.RotatePieceRight(); 
-        }
-        else if (key == sf::Keyboard::Key::P)
-        {
-            _gameEngine.PauseGame();
-        }
-    }
-    else if (state == GameState::Paused)
+    if (command == gameState -> second.end())
     {
-        if (key == sf::Keyboard::Key::P)
-        {
-            _gameEngine.ResumeGame();
-        }
-        else if (key == sf::Keyboard::Key::S)
-        {
-            _gameEngine.SaveGame();
-        }
-        else if (key == sf::Keyboard::Key::L)
-        {
-            _gameEngine.LoadGame();
-        }
-        else if (key == sf::Keyboard::Key::M)
-        {
-            _gameEngine.GoToMenu();
-        }
+        return nullptr;
     }
-    else if (state == GameState::GameOver)
-    {
-        if (key == sf::Keyboard::Key::R)
-        {
-            _gameEngine.ResetGame();
-        }
-        else if (key == sf::Keyboard::Key::M)
-        {
-            _gameEngine.GoToMenu();
-        }
-    }
+
+    return command -> second.get();
 }
