@@ -212,7 +212,7 @@ void RenderingEngine::DrawDisplay()
 
 void RenderingEngine::DrawMenu()
 {
-    if (_gameEngine.GetState() == GameState::Menu)
+    if (_gameEngine.GetState().GetId() == GameState::Menu)
     {
         if (_fontLoaded)
         {
@@ -302,7 +302,7 @@ void RenderingEngine::Render()
 {
     Clear();
 
-    GameState state = _gameEngine.GetState();
+    GameState state = _gameEngine.GetState().GetId();
 
     if (state == GameState::Menu)
     {

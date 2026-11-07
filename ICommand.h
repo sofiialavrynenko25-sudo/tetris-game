@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameEngine.h"
+class GameEngine;
 
 class ICommand
 {

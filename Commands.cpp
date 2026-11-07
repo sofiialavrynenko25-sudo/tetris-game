@@ -1,4 +1,5 @@
 #include "Commands.h"
+#include "GameEngine.h"
 
 void MoveLeftCmd::Execute(GameEngine& gameEngine)
 {

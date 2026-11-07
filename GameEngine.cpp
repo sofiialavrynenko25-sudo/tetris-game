@@ -23,6 +23,41 @@ void GameEngine::FillQueue()
     }
 }
 
+void GameEngine::LockPiece()
+{
+    if (_activePiece.GetIsBomb())
+    {
+        _board.TriggerBomb(_activePiece);
+    }
+    else
+    {
+        _board.PlacePiece(_activePiece);
+    }
+
+    _lockDelay = 0.0f;
+
+    std::vector<int> fullRows = _board.CheckFullRows();
+
+    if (!fullRows.empty())
+    {
+        for (int i = 0; i < fullRows.size(); i++)
+        {
+            _board.ClearRow(fullRows[i]);
+        }
+    }
+
+    _currScore += VICTORY_POINTS * fullRows.size();
+    _linesCleared += fullRows.size();
+
+    if (_currScore > _highScore)
+    {
+        _highScore = _currScore;
+        _storage.SaveHighScore(_highScore);
+    }
+
+    SpawnPiece();
+}
+
 void GameEngine::SpawnPiece()
 {
     FillQueue();
@@ -37,7 +72,7 @@ void GameEngine::SpawnPiece()
 
     if (!IsValidMove(_activePiece, Position(spawnX, spawnY)))
     {
-        _state = GameState::GameOver;
+        _state = &_gameOverState;
     }
 
     _canHold = true;
@@ -114,35 +149,7 @@ void GameEngine::HardDrop()
         _activePiece.Move(_activePiece.GetPosition().GetX(), _activePiece.GetPosition().GetY() + 1);
     }
 
-    if (_activePiece.GetIsBomb())
-    {
-        _board.TriggerBomb(_activePiece);
-    }
-    else
-    {
-        _board.PlacePiece(_activePiece);
-    }
-
-    std::vector<int> fullRows = _board.CheckFullRows();
-
-    if (!fullRows.empty())
-    {
-        for (int i = 0; i < fullRows.size(); i++)
-        {
-            _board.ClearRow(fullRows[i]);
-        }
-    }
-
-    _currScore += VICTORY_POINTS * fullRows.size();
-    _linesCleared += fullRows.size();
-
-    if (_currScore > _highScore)
-    {
-        _highScore = _currScore;
-        _storage.SaveHighScore(_highScore);
-    }
-
-    SpawnPiece();
+    LockPiece();
 }
 
 void GameEngine::HoldPiece()
@@ -172,7 +179,7 @@ void GameEngine::HoldPiece()
 
         if (!IsValidMove(_activePiece, Position(spawnX, spawnY)))
         {
-            _state = GameState::GameOver;
+            _state = &_gameOverState;
         }
     }
 
@@ -181,7 +188,7 @@ void GameEngine::HoldPiece()
 
 bool GameEngine::CheckGameOver()
 {
-    return _state == GameState::GameOver;
+    return _state -> GetId() == GameState::GameOver;
 }
 
 bool GameEngine::ResetGame()
@@ -201,7 +208,7 @@ bool GameEngine::ResetGame()
     _lockDelay = 0.0f;
     _dropTimer = 0.0f;
 
-    _state = GameState::Playing;
+    _state = &_playingState;
 
     SpawnPiece();
 
@@ -244,11 +251,11 @@ bool GameEngine::IsValidMove(Tetromino piece, Position newPosition)
 
 void GameEngine::Update(float time)
 {
-    if (_state != GameState::Playing)
-    {
-        return;
-    }
+    _state -> Update(*this, time);     
+}
 
+void GameEngine::ApplyGravity(float time)
+{
     _dropTimer += time;
 
     if (IsValidMove(_activePiece, Position(_activePiece.GetPosition().GetX(), _activePiece.GetPosition().GetY() + 1)))
@@ -267,65 +274,29 @@ void GameEngine::Update(float time)
 
         if (_lockDelay >= 0.5f)
         {
-            if (_activePiece.GetIsBomb())
-            {
-                _board.TriggerBomb(_activePiece);
-            }
-            else
-            {
-                _board.PlacePiece(_activePiece);
-            }
-
-            _lockDelay = 0.0f;
-
-            std::vector<int> fullRows = _board.CheckFullRows();
-
-            if (!fullRows.empty())
-            {
-                for (int i = 0; i < fullRows.size(); i++)
-                {
-                    _board.ClearRow(fullRows[i]);
-                }       
-            }
-
-            _currScore += VICTORY_POINTS * fullRows.size();
-            _linesCleared += fullRows.size();
-
-            if (_currScore > _highScore)
-            {
-                _highScore = _currScore;
-                _storage.SaveHighScore(_highScore);
-            }
-
-            SpawnPiece();
+           LockPiece();
         }
     }
 }
 
 void GameEngine::PauseGame()
 {
-    if (_state == GameState::Playing)
-    {
-        _state = GameState::Paused;
-    }
+    _state = &_pausedState;
 }
 
 void GameEngine::ResumeGame()
 {
-    if (_state == GameState::Paused)
-    {
-        _state = GameState::Playing;
-    }
+    _state = &_playingState;
 }
 
 void GameEngine::GoToMenu()
 {
-    _state = GameState::Menu;
+    _state = &_menuState;
 }
 
 bool GameEngine::SaveGame()
 {
-    if (_state != GameState::Playing && _state != GameState::Paused)
+    if (_state -> GetId() != GameState::Playing && _state -> GetId() != GameState::Paused)
     {
         return false;
     }
@@ -386,11 +357,11 @@ bool GameEngine::LoadGame()
 
     if (!IsValidMove(_activePiece, _activePiece.GetPosition()))
     {
-        _state = GameState::GameOver;
+        _state = &_gameOverState;
     }
     else
     {
-        _state = GameState::Paused;
+        _state = &_pausedState;
     }
 
     return true;
@@ -426,7 +397,7 @@ int GameEngine::GetHighScore()
     return _highScore;
 }
 
-GameState GameEngine::GetState()
+IGameState& GameEngine::GetState()
 {
-    return _state;
+    return *_state;
 }

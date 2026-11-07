@@ -3,6 +3,7 @@
 #include "GameEngine.h"
 #include "UserInputManager.h"
 #include "RenderingEngine.h"
+#include "ICommand.h"
 
 int main()
 {
@@ -12,7 +13,7 @@ int main()
     sf::Clock clock;
 
     GameEngine gameEngine;
-    UserInputManager inputManager;
+    UserInputManager inputManager(gameEngine);
     RenderingEngine renderingEngine(window, gameEngine);
 
     while (window.isOpen())
@@ -26,7 +27,7 @@ int main()
                 window.close();
             }
 
-            if (ICommand* command = inputManager.ProcessInput(*event, gameEngine.GetState()))
+            if (ICommand* command = inputManager.ProcessInput(*event))
             {
                 command -> Execute(gameEngine);
             }

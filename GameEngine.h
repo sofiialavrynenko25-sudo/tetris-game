@@ -4,11 +4,14 @@
 #include <random>
 #include <algorithm>
 #include <vector>
+#include <memory>
 
 #include "Tetromino.h"
 #include "Board.h"
 #include "StorageManager.h"
 #include "GameState.h"
+#include "IGameState.h"
+#include "States.h"
 
 class GameEngine
 {
@@ -23,14 +26,21 @@ class GameEngine
         int _currScore = 0;
         int _highScore = 0;
         int _linesCleared = 0;
-        GameState _state = GameState::Menu;
         float _lockDelay = 0.0f;
         float _dropTimer = 0.0f;
         StorageManager _storage = StorageManager();
 
+        MenuState _menuState;
+        PlayingState _playingState;
+        PausedState _pausedState;
+        GameOverState _gameOverState;
+
+        IGameState* _state = &_menuState;
+
         static const int VICTORY_POINTS = 40;
 
         void FillQueue();
+        void LockPiece();
 
     public:
         GameEngine()
@@ -54,6 +64,7 @@ class GameEngine
         bool IsValidMove(Tetromino piece, Position newPosition);
 
         void Update(float time);
+        void ApplyGravity(float time);
 
         void PauseGame();
         void ResumeGame();
@@ -68,5 +79,5 @@ class GameEngine
         std::queue<Tetromino> GetNextQueue();
         int GetCurrScore();
         int GetHighScore();
-        GameState GetState();
+        IGameState& GetState();
 };
